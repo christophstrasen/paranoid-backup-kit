@@ -6,7 +6,7 @@ This repo contains a collection of personal scripts for creating resilient backu
 ## Why should you use it?
 
 You probably shouldn’t — unless nothing else has worked well for you so far.  
-If you’re a bit paranoid about data loss, and still want to just drop secrets into a folder without thinking too much about it, this might help. Just be prepared to get your hands a bit dirty with customization.
+But if you’re a bit paranoid about data loss, and still want to just drop secrets into a folder without thinking too much about it, this might help. Just be prepared to get your hands a bit dirty with customization.
 
 And to be clear: Aside from using `age` (a modern best practice for file encryption), chunking (to reduce data loss if a file partially fails), and high default parity settings, there’s really only one unique selling point:
 
