@@ -94,7 +94,7 @@ REQUIRED_FILES=(
   "backup_age.key.gpg.base64.wrapped.txt.pgm"
   "backup_age.key.gpg.base64.wrapped.txt.dispersed.*.pgm"
   
-   # Instruction: change sser-specified vital keys or assets to your liking
+   # Instruction: change user-specified vital keys or assets to your liking
    # These normally come in via the regular flow landing in plain_staging and then getting encrypted
   "master-keys.txt.age"
   "master-keys.txt.base64.age"
