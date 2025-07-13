@@ -1,0 +1,26 @@
+# ignore plain folders
+/plain_staging/*
+/plain_recovered/*
+
+# Ignore large binary encrypted files
+*.bmp.age
+*.bmp.gpg
+*.ppm.gpg
+*.ppm.age
+* seed42.ppm.age
+*.seed42.pgm.age
+*.pgm.gpg
+*.pgm.age
+*.par2
+
+# files for image burning
+*.iso
+
+# all chunks
+*.chunk.*
+
+# large keys as images
+*.gpg.base64.wrapped.txt.pgm
+*.gpg.base64.wrapped.txt.dispersed.seed42.pgm
+backup_age.key.gpg.dispersed.seed42.pgm
+backup_age.key.gpg.pgm
