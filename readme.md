@@ -19,24 +19,23 @@ Small secrets are impractical to chunk — even some PDFs are too small. So, the
 #### Examples
 
 *This 1password recovery might be difficult*
+
 ![This 1password recovery might be difficult](example_1p_damaged.png)
-
-
 -----
+
 *Recovered: grainy, but legible.*
+
 ![Thats better](example_1p_grainy.png)
-
-
 -----
+
 *Codes not readable*
+
 ![codes not readable](example_txt_damaged.png)
-
-
 -----
+
 *Now we can recognize them*
+
 ![Now we can recognize them](example_txt_grainy.png)
-
-
 -----
 
 ## Concepts & important considerations
