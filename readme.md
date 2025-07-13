@@ -1,12 +1,12 @@
 # General description
 
-This repo contains a collection of personal scripts for creating resilient backups of sensitive data. The process intends to make smooth weekly additions or changes to secrets safe and smooth. It emphasizes ease of use, recoverability, and uncompromising security at the cost of initial setup complexity and increased storage requirements.
+This repo contains a collection of personal scripts for creating resilient backups of sensitive data. The process intends to make weekly additions or changes to secrets safe and smooth. It emphasizes ease of use, recoverability, and uncompromising security at the cost of initial setup complexity and increased storage requirements.
 
 
 ## Why should you use it?
 
 You probably shouldn’t — unless nothing else has worked well for you so far.  
-If you’re a bit paranoid about data loss however and still want to just drop secrets into a folder without thinking too much about it, this might help. Just be prepared to get your hands a bit dirty with customization.
+If you’re a bit paranoid about data loss, and still want to just drop secrets into a folder without thinking too much about it, this might help. Just be prepared to get your hands a bit dirty with customization.
 
 And to be clear: Aside from using `age` (a modern best practice for file encryption), chunking (to reduce data loss if a file partially fails), and high default parity settings, there’s really only one unique selling point:
 
@@ -125,7 +125,7 @@ The scripts assume Linux command-line proficiency and requires customization. Fo
    Confirm you can decrypt `backup_age.key.gpg`. Ensure the unlocking passphrase is memorable and secure.
 
 9. **Set up git (Optional)**
-   You might want your encrypted secrets in a private git repo. naturally you have to init that yourself.
+   You might want your encrypted secrets in a private git repo. You'll need to initialize it yourself.
    Choose whether to track the full scope of folders or `encrypted/` only. Validate that `git` commands in `backup.sh` behave as you intend.
 
 10. **Scan for secret leaks**
@@ -161,6 +161,6 @@ This should recover the original files, assuming the backup key and parity block
 
 # Known issues
 
-- undisperse.sh / shuffle_netpbm.py ignore --seed during decoding and only read from filename.
-- shuffle_netpbm.py Throws some warnings on theoretically undamage file. Restoration still works so no biggie.
-- decrypt.sh folder path is hard-coded so be aware when renaming `encrypted` directory.
+- `undisperse.sh` / `shuffle_netpbm.py` ignore `--seed` during decoding and only read from filename.
+- `shuffle_netpbm.py` Throws some warnings on theoretically undamage file. Restoration still works so no biggie.
+- `decrypt.sh` folder path is hard-coded so be aware when renaming `encrypted` directory.
