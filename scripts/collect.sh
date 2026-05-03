@@ -7,13 +7,16 @@ set -euo pipefail
 # Per design staging gets cleared in the main.sh encryption workflow
 # recommended single source of truth to only mount for the duration of collect.sh - see "lock/unlock" calls below
 
-MAIN_SOURCE_DIR="$HOME/secure/plain_source"    # Instruction: change to your source of truth for general secrets
-OTP_SOURCE_DIR="$HOME/Pixel 8 Backups/Aegis"   # Instruction: change to your source of truth for 2-factor OTP seeds e.g. Aegis backups. You might want to use "syncthing" from your phone.
-STAGING_DIR="$(dirname "$0")/../plain_staging"
+SCRIPT_DIR="$(dirname "$0")"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+PBK_REPO_ROOT="$REPO_ROOT"
+STAGING_DIR="$REPO_ROOT/plain_staging"
 
-source "$(dirname "$0")/runtime_guard.sh"
+source "$SCRIPT_DIR/runtime_guard.sh"
 pbk_require_main_entrypoint
-source "$(dirname "$0")/summary.sh"
+source "$SCRIPT_DIR/config_loader.sh"
+pbk_load_config
+source "$SCRIPT_DIR/summary.sh"
 
 log_summary " "
 log_summary " -- collect.sh --"
@@ -25,10 +28,10 @@ mkdir -p "$STAGING_DIR"
 
 #collect from main vault
 log_summary "🔑 Unlocking vault for collection"
-pkexec myvault unlock # Instruction: NOT SUPPLIED - bring your own vault lock/unlock
+pkexec "$PBK_VAULT_HELPER" unlock
 
-if [ ! -d "$MAIN_SOURCE_DIR" ]; then
-  log_summary "⚠️ Main Source directory $MAIN_SOURCE_DIR is not accessible."
+if [ ! -d "$PBK_MAIN_SOURCE_DIR" ]; then
+  log_summary "⚠️ Main Source directory $PBK_MAIN_SOURCE_DIR is not accessible."
   echo "Proceed with whatever is already in $STAGING_DIR? [y/N]"
   read -r confirm
   if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
@@ -38,11 +41,11 @@ if [ ! -d "$MAIN_SOURCE_DIR" ]; then
 else
  
   shopt -s nullglob
-  source_files=("$MAIN_SOURCE_DIR"/*)
+  source_files=("$PBK_MAIN_SOURCE_DIR"/*)
   shopt -u nullglob
 
   if [ ${#source_files[@]} -eq 0 ]; then
-    log_summary "⚠️ No files found in $MAIN_SOURCE_DIR."
+    log_summary "⚠️ No files found in $PBK_MAIN_SOURCE_DIR."
     echo "Proceed with whatever is already in $STAGING_DIR? [y/N]"
     read -r confirm
     if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
@@ -50,21 +53,21 @@ else
       exit 1
     fi
   else
-    log_summary "🔄 Copying files from $MAIN_SOURCE_DIR to $STAGING_DIR..."
-    cp -uv "$MAIN_SOURCE_DIR"/* "$STAGING_DIR/"
+    log_summary "🔄 Copying files from $PBK_MAIN_SOURCE_DIR to $STAGING_DIR..."
+    cp -uv "$PBK_MAIN_SOURCE_DIR"/* "$STAGING_DIR/"
   fi
 fi
 log_summary "Locking vault after collection"
-pkexec myvault lock
+pkexec "$PBK_VAULT_HELPER" lock
 
 
-if [ -d "$MAIN_SOURCE_DIR" ]; then
-  log_summary "⚠️ Warning, Main Source directory $MAIN_SOURCE_DIR remains unlocked. Please check busy-state and lock manually."
+if [ -d "$PBK_MAIN_SOURCE_DIR" ]; then
+  log_summary "⚠️ Warning, Main Source directory $PBK_MAIN_SOURCE_DIR remains unlocked. Please check busy-state and lock manually."
 fi
 
 
 # OTP collection
-find "$OTP_SOURCE_DIR" -type f | while read -r filepath; do
+find "$PBK_OTP_SOURCE_DIR" -type f | while read -r filepath; do
   filename=$(basename "$filepath")
   dest="$STAGING_DIR/$filename"
 

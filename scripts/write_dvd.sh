@@ -5,17 +5,23 @@ set -euo pipefail
 # Pretty solid for burning but not the most reliable in the verification part
 # If verification exits early, try re-running manually with --simulate flag which still checks the written media.
 
-DEVICE="/dev/sr0"
-WORKING_DIR=/tmp/dvdbackup
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+PBK_REPO_ROOT="$REPO_ROOT"
+
+source "$SCRIPT_DIR/runtime_guard.sh"
+pbk_require_main_entrypoint
+source "$SCRIPT_DIR/config_loader.sh"
+pbk_load_config
+
+DEVICE="$PBK_DVD_DEVICE"
+WORKING_DIR="$PBK_DVD_WORKING_DIR"
 MOUNTPOINT="$WORKING_DIR/burnverify"
 BUILD_STAGING_DIR="$WORKING_DIR/selected_for_iso"
 ISO="$WORKING_DIR/output.iso"
 SMALL_ISO_THRESHOLD=$((50 * 1024 * 1024))  # 50 MiB
 FULL_BLANK=true
 SIMULATE=false
-
-source "$(dirname "$0")/runtime_guard.sh"
-pbk_require_main_entrypoint
 
 # --- Parse options until first non-option argument ---
 while [[ $# -gt 0 ]]; do
@@ -56,7 +62,6 @@ target_folder="$1"
 # Step 1: Build manifest that is sorted in a fashion spreading out files randomly
 # so that potential dvd-edge rot spreads the damage instead of clusterering
 echo "[*] Step 1: Build manifest for file spreading across ISO."
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 "$SCRIPT_DIR/build_iso_manifest.sh" "$target_folder"
 
 
@@ -162,7 +167,7 @@ fi
 
 sleep 5
 echo "[*] Ejecting the DVD to finalize the burn and ensure clean verification..."
-sudo eject /dev/sr0
+sudo eject "$DEVICE"
 
 read -p "📀 Please reinsert the DVD now and press ENTER once it has spun up."
 

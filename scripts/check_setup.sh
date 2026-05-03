@@ -3,10 +3,12 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-KEYS_DIR="$REPO_ROOT/keys"
+PBK_REPO_ROOT="$REPO_ROOT"
 
 source "$SCRIPT_DIR/runtime_guard.sh"
 pbk_require_main_entrypoint
+source "$SCRIPT_DIR/config_loader.sh"
+pbk_load_config
 
 missing=false
 
@@ -16,22 +18,6 @@ required_tools=(
   ykchalresp mkisofs growisofs dvd+rw-mediainfo dvd+rw-format bc xxd pv python3
 )
 
-# Helper commands expected by other scripts
-required_helpers=(myvault myraid)
-
-# Required key files
-required_files=(
-  "$KEYS_DIR/backup_age.key.gpg"
-  "$KEYS_DIR/backup_age.key.gpg.base64.txt"
-  "$KEYS_DIR/backup_age.key.gpg.base64.wrapped.txt"
-  "$KEYS_DIR/backup_age.key.gpg.base64.wrapped.txt.pgm"
-  $KEYS_DIR/backup_age.key.gpg.base64.wrapped.txt.dispersed.*.pgm
-  "$KEYS_DIR/backup_pub.age"
-  "$KEYS_DIR/b2-security-backups-write.env.gpg"
-  "$KEYS_DIR/rclone.conf.gpg"
-  "$KEYS_DIR/key_to_pgm.sh"
-)
-
 for tool in "${required_tools[@]}"; do
   if ! command -v "$tool" >/dev/null 2>&1; then
     echo "❌ Missing tool: $tool"
@@ -39,16 +25,28 @@ for tool in "${required_tools[@]}"; do
   fi
 done
 
-for helper in "${required_helpers[@]}"; do
+for helper in "${PBK_REQUIRED_HELPERS[@]}"; do
   if ! command -v "$helper" >/dev/null 2>&1; then
     echo "❌ Missing helper command: $helper"
     missing=true
   fi
 done
 
-for f in "${required_files[@]}"; do
-  if [ ! -f "$f" ]; then
-    echo "❌ Missing file: $f"
+for var_name in "${PBK_REQUIRED_CONFIG_VARS[@]}"; do
+  if [[ -z "${!var_name:-}" ]]; then
+    echo "❌ Missing config value: $var_name"
+    missing=true
+  fi
+done
+
+for pattern in "${PBK_SETUP_REQUIRED_PATTERNS[@]}"; do
+  if [[ "$pattern" == *"*"* || "$pattern" == *"?"* || "$pattern" == *"["* ]]; then
+    if ! compgen -G "$pattern" >/dev/null; then
+      echo "❌ Missing file matching: $pattern"
+      missing=true
+    fi
+  elif [ ! -f "$pattern" ]; then
+    echo "❌ Missing file: $pattern"
     missing=true
   fi
 done
@@ -62,9 +60,12 @@ else
   printf '  %s\n' "${required_tools[@]}" >&2
   echo
   echo "Required helper commands:" >&2
-  printf '  %s\n' "${required_helpers[@]}" >&2
+  printf '  %s\n' "${PBK_REQUIRED_HELPERS[@]}" >&2
   echo
-  echo "Required files (wildcards expanded. dispersed pgm file name is OK to differ):" >&2
-  printf '  %s\n' "${required_files[@]}" >&2
+  echo "Required config values:" >&2
+  printf '  %s\n' "${PBK_REQUIRED_CONFIG_VARS[@]}" >&2
+  echo
+  echo "Required files or patterns:" >&2
+  printf '  %s\n' "${PBK_SETUP_REQUIRED_PATTERNS[@]}" >&2
   exit 1
 fi

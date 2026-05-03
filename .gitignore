@@ -1,5 +1,8 @@
 .codex
 
+# local machine-specific configuration
+/config/local.sh
+
 # ignore plain folders
 /plain_staging/*
 /plain_recovered/*

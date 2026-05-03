@@ -103,16 +103,16 @@ The scripts assume Linux command-line proficiency and requires customization. Fo
    Ensure these commands are installed: `age`, `gpg`, `par2`, `magick`, `pdftoppm`, `git`, `rclone`, `rsync`, `pkexec`, `mdadm`, `cryptsetup`, `ykchalresp`, `mkisofs`, `growisofs`, `dvd+rw-mediainfo`, `dvd+rw-format`, `bc`, `xxd`, `pv`, `python3`
 
 2. **Provide missing helpers**
-   Scripts call `myvault` and `myraid` via `pkexec`. Supply equivalents or modify commands.
+   Scripts call helper commands via `pkexec`; defaults are `myvault` and `myraid`. Supply equivalents and set their names in `config/local.sh`.
 
 3. **Create & verify key files**
    Place the encrypted private key (`backup_age.key.gpg`) and plaintext public key (`backup_pub.age`) in `keys/`. Run `keys/key_to_pgm.sh` to generate Base64 and PGM variants. These will be automatically included during encrypt runs in `encrypted/`.
 
 4. **Add required support files**
-   Ensure the following files exist: `b2-security-backups-write.env.gpg`, and `rclone.conf.gpg` or comment out their usage in the respective sections of `backup.sh`
+   Ensure the following files exist: `b2-security-backups-write.env.gpg`, and `rclone.conf.gpg`, or adjust their paths in `config/local.sh`.
 
 5. **Customize the setup**
-   Adjust paths and filenames as indicated in the scripts via ` # Instruction:` comments (e.g. in `collect.sh`, `backup.sh`, `verify.sh`).
+   Copy `config/local.example.sh` to `config/local.sh` and adjust local paths, helper command names, backup destinations, device names, and rclone remote/folder names there. `config/local.sh` is ignored by git.
 
 6. **Check helper scripts**
    Ensure all referenced utilities (e.g., vault/RAID helpers) are present and working.

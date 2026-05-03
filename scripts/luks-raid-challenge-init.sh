@@ -1,12 +1,19 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-RAID_DEV="/dev/md0"
-CHALLENGE="raid-challenge"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+PBK_REPO_ROOT="$REPO_ROOT"
+source "$SCRIPT_DIR/config_loader.sh"
+pbk_load_config
 
-if ! grep -q '^md0 :' /proc/mdstat; then
+RAID_DEV="$PBK_RAID_DEV"
+RAID_NAME="$(basename "$RAID_DEV")"
+CHALLENGE="$PBK_RAID_CHALLENGE"
+
+if ! grep -q "^$RAID_NAME :" /proc/mdstat; then
   echo "Assembling RAID..."
-  sudo mdadm --assemble "$RAID_DEV" /dev/sd[ab]1
+  sudo mdadm --assemble "$RAID_DEV" $PBK_RAID_MEMBER_GLOB
 else
   echo "$RAID_DEV already active. Skipping assembly."
 fi

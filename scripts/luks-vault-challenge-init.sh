@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VAULT_IMG="$HOME/secure.img"
-CHALLENGE="myvault-challenge"
-AUTH_KEYFILE="$HOME/keyfile.txt"  # Existing unlock key (e.g. original password)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+PBK_REPO_ROOT="$REPO_ROOT"
+source "$SCRIPT_DIR/config_loader.sh"
+pbk_load_config
+
+VAULT_IMG="$PBK_VAULT_IMG"
+CHALLENGE="$PBK_VAULT_CHALLENGE"
+AUTH_KEYFILE="$PBK_VAULT_AUTH_KEYFILE"
 
 echo "🔐 Setting up LUKS unlock with YubiKey slot 1 + password..."
 read -rsp "Enter the password to combine with your YubiKey: " PASSWORD

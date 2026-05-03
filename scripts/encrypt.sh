@@ -10,18 +10,23 @@ set -euo pipefail
 # If you wish to keep the encrypted age private key out, please adjust the script
 # However this would add another single point of failure beyond the credentials that are required to decrypt that key.
 
-STAGING_DIR="$(dirname "$0")/../plain_staging"
-ENCRYPTED_DIR="$(dirname "$0")/../encrypted"
-KEYS_DIR="$(dirname "$0")/../keys"
-AGE_RECIPIENT_FILE="$KEYS_DIR/backup_pub.age"
+SCRIPT_DIR="$(dirname "$0")"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+PBK_REPO_ROOT="$REPO_ROOT"
+STAGING_DIR="$REPO_ROOT/plain_staging"
+ENCRYPTED_DIR="$REPO_ROOT/encrypted"
 
 MIN_SIZE=256  # bytes 
 CHUNK_SIZE="256K" #IMPORTANT: if you change the chunk size here, you _MUST_ change CHUNK_SIZE in assemble_chunks.py
 MIN_SPLIT_SIZE=$((512 * 1024))  # 512 KiB
 
-source "$(dirname "$0")/runtime_guard.sh"
+source "$SCRIPT_DIR/runtime_guard.sh"
 pbk_require_main_entrypoint
-source "$(dirname "$0")/summary.sh"
+source "$SCRIPT_DIR/config_loader.sh"
+pbk_load_config
+KEYS_DIR="$PBK_KEYS_DIR"
+AGE_RECIPIENT_FILE="$KEYS_DIR/backup_pub.age"
+source "$SCRIPT_DIR/summary.sh"
 
 log_summary " "
 log_summary " -- encrypt.sh --"
@@ -83,11 +88,11 @@ cp "$KEYS_DIR/backup_age.key.gpg" "$ENCRYPTED_DIR/"
 cp "$KEYS_DIR/backup_age.key.gpg.base64.txt" "$ENCRYPTED_DIR/"
 cp "$KEYS_DIR/backup_age.key.gpg.base64.wrapped.txt.pgm" "$ENCRYPTED_DIR/"
 cp $KEYS_DIR/backup_age.key.gpg.base64.wrapped.txt.dispersed.*.pgm "$ENCRYPTED_DIR/"
-cp "$(dirname "$0")/shuffle_netpbm.py" "$ENCRYPTED_DIR/"
-cp "$(dirname "$0")/assemble_chunks.py" "$ENCRYPTED_DIR/"
-cp "$(dirname "$0")/undisperse.sh" "$ENCRYPTED_DIR/"
-cp "$(dirname "$0")/decrypt.sh" "$ENCRYPTED_DIR/"
-cp "$(dirname "$0")/runtime_guard.sh" "$ENCRYPTED_DIR/"
+cp "$SCRIPT_DIR/shuffle_netpbm.py" "$ENCRYPTED_DIR/"
+cp "$SCRIPT_DIR/assemble_chunks.py" "$ENCRYPTED_DIR/"
+cp "$SCRIPT_DIR/undisperse.sh" "$ENCRYPTED_DIR/"
+cp "$SCRIPT_DIR/decrypt.sh" "$ENCRYPTED_DIR/"
+cp "$SCRIPT_DIR/runtime_guard.sh" "$ENCRYPTED_DIR/"
 
 # Generate manifest of encrypted and copied over content
 cd "$ENCRYPTED_DIR"

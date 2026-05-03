@@ -9,11 +9,15 @@ set -euo pipefail
 
 
 SCRIPT_DIR="$(dirname "$0")"
-PLAIN_DIR="$SCRIPT_DIR/../plain_staging"
-ENC_DIR="$SCRIPT_DIR/../encrypted"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+PBK_REPO_ROOT="$REPO_ROOT"
+PLAIN_DIR="$REPO_ROOT/plain_staging"
+ENC_DIR="$REPO_ROOT/encrypted"
 
 source "$(dirname "$0")/runtime_guard.sh"
 pbk_require_main_entrypoint
+source "$SCRIPT_DIR/config_loader.sh"
+pbk_load_config
 source "$(dirname "$0")/summary.sh"
 
 log_summary " "
@@ -88,28 +92,10 @@ fi
 
 log_summary "Checking presence of encrypted keys."
 
-# Define required files
-REQUIRED_FILES=(
-	# Vital for decryption! - gets copied in from the "keys" directory during encrypt.sh
-  "backup_age.key.gpg"
-  "backup_age.key.gpg.base64.txt"
-  "backup_age.key.gpg.base64.wrapped.txt.pgm"
-  "backup_age.key.gpg.base64.wrapped.txt.dispersed.*.pgm"
-  
-   # Instruction: change user-specified vital keys or assets to your liking
-   # These normally come in via the regular flow landing in plain_staging and then getting encrypted
-  "master-keys.txt.age"
-  "master-keys.txt.base64.age"
-  "master-keys.txt.base64.wrapped.dispersed.*.age"
-  "emergency-key.txt.age"
-  "emergency-key.txt.base64.age"
-  "emergency-key.txt.base64.wrapped.dispersed.*.age"
-)
-
 # Look for required files
 missing=false
 shopt -s nullglob
-for pattern in "${REQUIRED_FILES[@]}"; do
+for pattern in "${PBK_BACKUP_REQUIRED_PATTERNS[@]}"; do
   unset matches  # prevent stale data
   matches=("$ENC_DIR"/$pattern)
 
