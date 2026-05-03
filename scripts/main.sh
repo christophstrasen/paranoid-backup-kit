@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SCRIPT_DIR="$(dirname "$0")"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd -P)"
+source "$SCRIPT_DIR/runtime_guard.sh"
+pbk_require_supported_main_entrypoint
+
 ENC_DIR="$SCRIPT_DIR/../encrypted"
 source "$SCRIPT_DIR/summary.sh"
 
@@ -74,4 +77,3 @@ while true; do
       ;;
   esac
 done
-

@@ -12,6 +12,8 @@ SCRIPT_DIR="$(dirname "$0")"
 PLAIN_DIR="$SCRIPT_DIR/../plain_staging"
 ENC_DIR="$SCRIPT_DIR/../encrypted"
 
+source "$(dirname "$0")/runtime_guard.sh"
+pbk_require_main_entrypoint
 source "$(dirname "$0")/summary.sh"
 
 log_summary " "

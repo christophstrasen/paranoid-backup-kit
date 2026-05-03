@@ -12,6 +12,8 @@ DISPERSED_COUNT=0
 PLAIN_STAGING="$(dirname "$0")/../plain_staging"
 SHUFFLER="$(dirname "$0")/shuffle_netpbm.py"
 
+source "$(dirname "$0")/runtime_guard.sh"
+pbk_require_main_entrypoint
 source "$(dirname "$0")/summary.sh"
 
 log_summary " "

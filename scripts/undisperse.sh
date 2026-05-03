@@ -9,6 +9,9 @@ RECOVER=false
 SEED_OVERRIDE=""
 TARGET_DIR=""
 
+source "$(dirname "$0")/runtime_guard.sh"
+pbk_require_main_or_recovery_entrypoint
+
 # Parse flags and optional directory (must be last)
 while [[ $# -gt 0 ]]; do
   case "$1" in

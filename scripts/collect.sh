@@ -11,6 +11,8 @@ MAIN_SOURCE_DIR="$HOME/secure/plain_source"    # Instruction: change to your sou
 OTP_SOURCE_DIR="$HOME/Pixel 8 Backups/Aegis"   # Instruction: change to your source of truth for 2-factor OTP seeds e.g. Aegis backups. You might want to use "syncthing" from your phone.
 STAGING_DIR="$(dirname "$0")/../plain_staging"
 
+source "$(dirname "$0")/runtime_guard.sh"
+pbk_require_main_entrypoint
 source "$(dirname "$0")/summary.sh"
 
 log_summary " "
@@ -71,4 +73,3 @@ find "$OTP_SOURCE_DIR" -type f | while read -r filepath; do
 done
 
 log_summary "✅ All files collected into $STAGING_DIR"
-

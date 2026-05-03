@@ -19,6 +19,8 @@ MIN_SIZE=256  # bytes
 CHUNK_SIZE="256K" #IMPORTANT: if you change the chunk size here, you _MUST_ change CHUNK_SIZE in assemble_chunks.py
 MIN_SPLIT_SIZE=$((512 * 1024))  # 512 KiB
 
+source "$(dirname "$0")/runtime_guard.sh"
+pbk_require_main_entrypoint
 source "$(dirname "$0")/summary.sh"
 
 log_summary " "
@@ -85,6 +87,7 @@ cp "$(dirname "$0")/shuffle_netpbm.py" "$ENCRYPTED_DIR/"
 cp "$(dirname "$0")/assemble_chunks.py" "$ENCRYPTED_DIR/"
 cp "$(dirname "$0")/undisperse.sh" "$ENCRYPTED_DIR/"
 cp "$(dirname "$0")/decrypt.sh" "$ENCRYPTED_DIR/"
+cp "$(dirname "$0")/runtime_guard.sh" "$ENCRYPTED_DIR/"
 
 # Generate manifest of encrypted and copied over content
 cd "$ENCRYPTED_DIR"

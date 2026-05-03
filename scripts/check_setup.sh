@@ -5,6 +5,9 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 KEYS_DIR="$REPO_ROOT/keys"
 
+source "$SCRIPT_DIR/runtime_guard.sh"
+pbk_require_main_entrypoint
+
 missing=false
 
 # Required external tools

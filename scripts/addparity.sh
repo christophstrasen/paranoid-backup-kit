@@ -4,8 +4,10 @@ set -euo pipefail
 # Adds a default of 100% parity via the par2 tool
 
 MIN_SIZE=256        # Minimum file size to include
-ENCRYPTED_DIR="$(dirname "$0")/../encrypted"
+ENCRYPTED_DIR="$(cd "$(dirname "$0")/../encrypted" && pwd -P)"
 
+source "$(dirname "$0")/runtime_guard.sh"
+pbk_require_main_entrypoint
 source "$(dirname "$0")/summary.sh"
 
 log_summary " "
@@ -37,10 +39,15 @@ done
 # Move to encrypted directory for local paths
 cd "$ENCRYPTED_DIR"
 
+local_files=()
+for file in "${files[@]}"; do
+  local_files+=("$(basename "$file")")
+done
+
 # Generate parity file - default par2 block size 64kb generates ~5 recovery blocks for our chunks (default: 256kb)
 # Note that if you adjust MIN_SIZE in encrypt.sh the block-size here should be adjusted accordingly
-log_summary "Generating parity for ${#files[@]}"
-par2 create -r100 -s65536 backup.par2 "${files[@]}" # Instructions: lower -r if you are strapped for storage and accept less parity.
+log_summary "Generating parity for ${#local_files[@]}"
+par2 create -r100 -s65536 backup.par2 "${local_files[@]}" # Instructions: lower -r if you are strapped for storage and accept less parity.
 
 # Self check parity validity
 shopt -s nullglob
@@ -59,4 +66,3 @@ for file in "${par2_files[@]}"; do
 done
 
 log_summary "✅ Parity files generated and validated."
-

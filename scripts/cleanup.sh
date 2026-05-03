@@ -8,6 +8,8 @@ SCRIPT_DIR="$(dirname "$0")"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 STAGING_DIR="$REPO_ROOT/plain_staging"
 
+source "$(dirname "$0")/runtime_guard.sh"
+pbk_require_main_entrypoint
 source "$(dirname "$0")/summary.sh"
 
 log_summary " "
@@ -30,4 +32,3 @@ for file in "${files[@]}"; do
 done
 
 log_summary "🗑️ Cleanup complete."
-

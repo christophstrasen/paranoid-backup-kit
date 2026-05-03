@@ -14,6 +14,9 @@ SMALL_ISO_THRESHOLD=$((50 * 1024 * 1024))  # 50 MiB
 FULL_BLANK=true
 SIMULATE=false
 
+source "$(dirname "$0")/runtime_guard.sh"
+pbk_require_main_entrypoint
+
 # --- Parse options until first non-option argument ---
 while [[ $# -gt 0 ]]; do
   case "$1" in

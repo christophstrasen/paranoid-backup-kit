@@ -7,6 +7,9 @@ TMP_KEY_FILE="/tmp/decryption_key"
 BACKUP_KEY_ENC="backup_age.key.gpg"
 CHECKSUM_FILE="$ENCRYPTED_DIR/checksums.sha256"
 
+source "$(dirname "$0")/runtime_guard.sh"
+pbk_require_main_or_recovery_entrypoint
+
 SKIP_CLEANUP=false
 
 # --- Parse arguments ---

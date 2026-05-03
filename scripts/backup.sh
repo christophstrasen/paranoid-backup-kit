@@ -10,6 +10,8 @@ ENC_DIR="$REPO_ROOT/encrypted"
 DISC_DEST_DIR="/mnt/storage/security-backups" # Instruction: Change this to the destionation suitable for storage
 GPG_ENV_FILE="$REPO_ROOT/keys/b2-security-backups-write.env.gpg" # Instruction: Change if your b2 environment setup is stored elsewhere
 
+source "$(dirname "$0")/runtime_guard.sh"
+pbk_require_main_entrypoint
 source "$(dirname "$0")/summary.sh"
 
 log_summary " "
@@ -252,5 +254,4 @@ if $RUN_GDRIVE; then
 
   log_summary "✅ Upload to Google Drive complete: $DRIVE_TARGET_PATH"
 fi
-
 
