@@ -117,6 +117,8 @@ The scripts assume Linux command-line proficiency and requires customization. Fo
 6. **Check helper scripts**
    Ensure all referenced utilities (e.g., vault/RAID helpers) are present and working.
 
+   The `scripts/luks-*-challenge-init.sh` files are one-time setup helpers for adding password+YubiKey-derived keys to LUKS keyslots. They are not used during normal backup runs. Normal unlock/lock behavior is delegated to your configured helper commands, e.g. `myvault` and `myraid`.
+
 7. **Verify setup**
    Run `check_setup.sh` for a sanity check but do not rely on it blindly.
 

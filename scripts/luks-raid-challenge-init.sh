@@ -30,4 +30,4 @@ YK_RESPONSE=$(ykchalresp -1 "$CHALLENGE") || {
 KEY=$(echo -n "$PASSWORD$YK_RESPONSE" | sha256sum | awk '{print $1}')
 
 echo "Please enter your EXISTING passphrase to authorize key addition to $RAID_DEV..."
-echo "$KEY" | sudo cryptsetup luksAddKey "$RAID_DEV" --key-file=skey.txt
+echo -n "$KEY" | sudo cryptsetup luksAddKey "$RAID_DEV"

@@ -31,5 +31,17 @@ PBK_GDRIVE_FOLDER=""
 # Advanced: PBK_SETUP_REQUIRED_PATTERNS controls check_setup.sh support-file
 # checks. Override only if you intentionally renamed or moved key/config files.
 
+# Advanced LUKS/YubiKey setup helpers.
+# Only needed for scripts/luks-*-challenge-init.sh, not normal backup runs.
+# These scripts add password+YubiKey-derived keys to LUKS keyslots.
+# PBK_RAID_DEV="/dev/md0"
+# PBK_RAID_MEMBER_GLOB="/dev/sd[ab]1"
+# PBK_RAID_CHALLENGE="raid-challenge"
+# PBK_VAULT_IMG="$HOME/secure.img"
+# PBK_VAULT_CHALLENGE="myvault-challenge"
+# Existing LUKS keyfile used only to authorize adding the derived vault key.
+# Keep it outside this repo; remove or protect it after verifying the new unlock method.
+# PBK_VAULT_AUTH_KEYFILE="$HOME/keyfile.txt"
+
 # Optical media device used by write_dvd.sh.
 PBK_DVD_DEVICE="/dev/sr0"
